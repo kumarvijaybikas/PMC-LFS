@@ -2,7 +2,7 @@
 
 Hi! This is my implementation of the **Europe PMC Literature Funding Service** take-home exercise.
 
-The goal of this project is to build a Java Spring Boot REST API that takes a literature search query, finds matching research papers from Europe PMC, enriches each paper with grant and funding details from Europe PMC's Grants (Grist) API, and calculates summary statistics (like top funders).
+The goal of this project is to build a Java Spring Boot REST API that takes a literature search query, finds matching research papers from Europe PMC, enriches each paper with grant and funding details from Europe PMC's Grants (Grist) API.
 
 ---
 
