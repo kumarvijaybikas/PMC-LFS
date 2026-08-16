@@ -12,4 +12,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build -t europepmc-service --file Dockerfile --tag europepmc-service:latest
+      run: docker build -t europepmc-service  --file Dockerfile .
