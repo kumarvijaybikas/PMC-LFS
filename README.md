@@ -638,4 +638,20 @@ While this prototype deliberately exposes open public access to mirror Europe PM
 | **Outbound Protection** | Basic timeout handling | Resilience4j Circuit Breaker + Token Bucket Rate Limiter |
 | **Throughput Capacity** | ~50 req/sec per node | 10,000+ req/sec distributed across pods |
 
+---
+
+## Disclosure of AI Usage
+
+In line with **EMBL-EBI's Acceptable Use of AI Policy**:
+
+- **Tools Used**: Generative AI coding assistants (e.g., LLM pair programming).
+- **What AI was used for**:
+  - Helping write and format the `README.md` documentation.
+  - Generating sample test data and mock JSON responses.
+  - Quick syntax help for Spring Boot 3 and Docker setups.
+- **My Ownership & Verification**:
+  - All project architecture, design choices, and code logic were designed, reviewed, and tested by me.
+  - All code and tests have been verified to work with live Europe PMC APIs.
+
+
 
