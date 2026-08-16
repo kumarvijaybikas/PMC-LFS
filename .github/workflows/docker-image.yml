@@ -13,3 +13,9 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build the Docker image
       run: docker build -t europepmc-service  --file Dockerfile .
+    - name: Docker hub publish
+      run: |
+        docker login -u kumarvijaybikas -p ${{secrets.DOCKER_HUB_TOKEN}}
+        docker image tag europepmc-service:latest kumarvijaybikas/europepmc-service:latest
+        docker push kumarvijaybikas/europepmc-service:latest
+    
