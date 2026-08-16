@@ -6,12 +6,17 @@ The goal of this project is to build a Java Spring Boot REST API that takes a li
 
 ---
 
-## Quick Start (How to Run)
+## Quick Start
 
-### 1. Run with Docker (Easiest)
+### How to build the service
 ```bash
 # Build the Docker image
 docker build -t europepmc-service .
+```
+
+
+### 1. How to run it
+```bash
 
 # Option A: Run with default caching (30 min TTL, 5,000 items)
 docker run --rm -p 8080:8080 europepmc-service
@@ -55,7 +60,19 @@ java -jar target/literature-funding-service-1.0.0.jar --europepmc.cache-expire-m
 
 Once running, the service is live at `http://localhost:8080` locally.
 
+
+### How to run the tests:
+```bash
+# Windows
+.\mvnw.cmd clean test
+
+# Linux / macOS
+./mvnw clean test
+```
+
 ---
+
+
 
 ## Helpful Links
 
@@ -277,7 +294,61 @@ Multiple papers in the same search result almost always cite the same research g
 
 ---
 
-### 2. Deep Dive: Architectural Best Practices
+### 2. Limitations of the Grant-Resolution Approach
+
+While the grant-resolution engine provides resilient enrichment and disambiguation, several inherent limitations were identified:
+
+1. **Exact-Match Querying vs. Formatting Variations**:
+   - The engine queries the Grist API using exact field matching (`grant_id:"<rawId>"`).
+   - Authors and literature sources (e.g., MEDLINE vs. PMC full-text) report grant IDs with varying prefixes, suffixes, or slash notations (e.g., `084323` vs. `WT084323` vs. `084323/Z/07/Z`).
+   - Any unnormalized punctuation or spacing differences cause valid grants to return `UNRESOLVED`.
+
+2. **Bundled / Compound Grant Strings**:
+   - In scientific papers, authors frequently bundle multiple grants in a single identifier field (e.g., `"K12 CA184746, P30 CA008748"`). Without multi-stage tokenization and regex splitting before querying, the entire concatenated string is sent to the Grist API as a single invalid identifier.
+
+3. **Heuristic Disambiguation Limitations**:
+   - When a grant ID returns multiple distinct records, the engine disambiguates solely by alphanumeric substring containment against the reported funder agency name.
+   - **No Acronym / Synonym Mapping**: Common agency abbreviations (e.g., `NIH`, `NCI`, `WT`, `MRC`) are not expanded to their formal registry entities (e.g., `National Institutes of Health`, `Wellcome Trust`), causing disambiguation to fall back to `AMBIGUOUS`.
+   - **Unused Context Metadata**: The service does not currently leverage secondary metadata—such as cross-referencing author names with the Principal Investigator (PI) or verifying publication year against grant `startDate`/`endDate` windows.
+
+4. **Sequential HTTP Execution Bottleneck**:
+   - During publication mapping, unique grant lookups are executed synchronously inside the article stream. While Caffeine minimizes repeat calls, uncached queries for large result sets incur cumulative HTTP round-trip latency.
+
+5. **Upstream Scope and Biomedical Bias**:
+   - Europe PMC's Grist database predominantly indexes major biomedical and health science funding bodies (Wellcome, NIH, UKRI, ERC). Interdisciplinary or regional international grant numbers (e.g., NSF, DFG) will consistently return `UNRESOLVED` despite being valid research awards.
+
+---
+
+### 3. Operational Concerns Identified During Implementation
+
+During the design and implementation of this service, several operational challenges were identified that must be addressed for high-scale production deployment:
+
+1. **Upstream Rate Limits & Throttling (Fair Use Policy)**:
+   - Europe PMC enforces a fair use limit (~10 requests/second per IP).
+   - Although the Caffeine in-memory cache shields repeated grant lookups, high-concurrency literature searches with uncached queries could trigger HTTP `429 Too Many Requests` or temporary IP throttling from EBI endpoints.
+   - *Mitigation*: Wrap outbound clients with a Token Bucket rate limiter (e.g., Bucket4j/Resilience4j) to queue and pace outbound requests smoothly.
+
+2. **Downstream Latency Amplification ($N+1$ Query Problem)**:
+   - A single incoming request asking for 100 articles can trigger up to 100+ outbound Grist API calls if grants are uncached.
+   - If Europe PMC's Grist API experiences degraded performance or transient latency spikes, server worker threads can quickly become starved.
+   - *Mitigation*: Implement short connect/read timeouts (configured via `europepmc.connect-timeout-ms` / `europepmc.read-timeout-ms`), Circuit Breakers (fail-fast to `UNRESOLVED`), and parallel batching with Virtual Threads.
+
+3. **In-Memory Cache Inconsistency in Horizontally Scaled Environments**:
+   - The local Caffeine cache is JVM-bound and isolated per container pod.
+   - In a multi-replica Kubernetes deployment, each pod maintains its own cache lifecycle, resulting in cache duplication across pods and potential cross-replica inconsistency when upstream records change.
+   - *Mitigation*: Introduce an external distributed cache (Redis cluster) as an L2 tier alongside local L1 Caffeine caching.
+
+4. **Upstream Schema Inconsistencies & Polymorphic Payloads**:
+   - Europe PMC APIs serve JSON converted from underlying XML structures. This causes arrays with a single element to collapse into single JSON objects, numbers to occasionally be serialized as strings, and missing entities to return HTTP 404 rather than empty collections.
+   - *Mitigation*: Implement lenient custom Jackson deserializers and verify field types defensively to prevent deserialization breakages.
+
+5. **Heap Memory Pressure Under Large Result Sets**:
+   - Serving maximum limit queries (`limit=1000`) holding hundreds of publication DTOs and bidirectional funder aggregation mappings in memory simultaneously can cause GC allocation spikes under high concurrent user load.
+   - *Mitigation*: Bound cache sizes (`europepmc.cache-max-size`), enforce strict query limits (`europepmc.max-limit`), and deploy with Generational ZGC.
+
+---
+
+### 4. Deep Dive: Architectural Best Practices
 
 ```
                                   Client (React UI / CLI)
@@ -402,7 +473,7 @@ The service uses **Caffeine**, a high-performance in-memory caching library. You
 
 ---
 
-### 3. Why I Chose This Architecture (Trade-offs & Rationale)
+### 5. Why I Chose This Architecture (Trade-offs & Rationale)
 
 When designing this service, I evaluated several architectural options and made deliberate engineering trade-offs:
 
@@ -434,7 +505,7 @@ When designing this service, I evaluated several architectural options and made 
 
 ---
 
-### 4. Roadmap for a Production-Grade System (Optimization, Observability & Cost)
+### 6. Roadmap for a Production-Grade System (Optimization, Observability & Cost)
 
 If transitioning this prototype into a high-scale, mission-critical production service handling millions of daily requests, here is the architectural roadmap:
 
