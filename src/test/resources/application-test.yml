@@ -1,0 +1,7 @@
+europepmc:
+  articles-api-url: http://localhost:8089/search
+  grants-api-url: http://localhost:8089/GristAPI/rest/get
+  connect-timeout-ms: 2000
+  read-timeout-ms: 3000
+  default-page-size: 25
+  max-limit: 1000

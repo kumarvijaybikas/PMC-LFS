@@ -1,0 +1,39 @@
+{
+  "HitCount": "1",
+  "Request": {
+    "Query": "grant_id:084323",
+    "ResultType": "Core",
+    "Page": "1"
+  },
+  "RecordList": {
+    "Record": {
+      "Person": {
+        "FamilyName": "Wilkinson",
+        "GivenName": "Robert",
+        "Initials": "RJ",
+        "Title": "Prof"
+      },
+      "Grant": {
+        "Funder": {
+          "Name": "Wellcome Trust",
+          "pubMedSearchTerm": "Wellcome Trust",
+          "FundRefID": "https://doi.org/10.13039/100010269"
+        },
+        "Id": "084323",
+        "Doi": "10.35802/084323",
+        "Title": "Establishment of a Centre for Clinical Infectious Diseases Research",
+        "Type": "Strategic Award - Science",
+        "StartDate": "2008-06-01",
+        "EndDate": "2016-06-30",
+        "Amount": {
+          "value": 3272110.0,
+          "Currency": "GBP"
+        }
+      },
+      "Institution": {
+        "Name": "University of Cape Town",
+        "RORID": "03p74gp79"
+      }
+    }
+  }
+}

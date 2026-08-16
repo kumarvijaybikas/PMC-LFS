@@ -1,0 +1,46 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: europe-pmc-literature-funding-service
+
+europepmc:
+  api-version: "@project.version@"
+  articles-api-url: https://www.ebi.ac.uk/europepmc/webservices/rest/search
+  grants-api-url: https://www.ebi.ac.uk/europepmc/GristAPI/rest/get
+  connect-timeout-ms: 5000
+  read-timeout-ms: 10000
+  default-page-size: 25
+  max-limit: 1000
+  cache-expire-minutes: 30
+  cache-max-size: 5000
+
+info:
+  app:
+    name: Europe PMC Literature Funding Service
+    description: REST API that queries Europe PMC publications, enriches grant data with Grist API, and aggregates funder stats
+    version: "@project.version@"
+    java-version: 21
+  contact:
+    team: Europe PMC Technical Team
+    documentation: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
+    os:
+      enabled: true
+logging:
+  level:
+    root: INFO
+    org.europepmc.funding: INFO
+    org.springframework.web: INFO

@@ -1,0 +1,56 @@
+{
+  "version": "6.9",
+  "hitCount": 2,
+  "nextCursorMark": "CURSOR_PAGE_2",
+  "request": {
+    "queryString": "Parkinson's disease AND mitochondrial dysfunction",
+    "resultType": "core",
+    "cursorMark": "*",
+    "pageSize": 1
+  },
+  "resultList": {
+    "result": [
+      {
+        "id": "1001",
+        "source": "MED",
+        "pmid": "1001",
+        "doi": "10.1000/182",
+        "title": "Mitochondrial dynamics in Parkinson's Disease",
+        "authorString": "Smith J, Doe A.",
+        "authorList": {
+          "author": [
+            { "fullName": "Smith J", "firstName": "John", "lastName": "Smith" },
+            { "fullName": "Doe A", "firstName": "Alice", "lastName": "Doe" }
+          ]
+        },
+        "journalInfo": {
+          "volume": "10",
+          "issue": "2",
+          "dateOfPublication": "2024 Jan",
+          "yearOfPublication": 2024,
+          "journal": {
+            "title": "Neuroscience Letters",
+            "medlineAbbreviation": "Neurosci Lett"
+          }
+        },
+        "pubYear": "2024",
+        "abstractText": "Study of mitochondrial dynamics.",
+        "citedByCount": 15,
+        "grantsList": {
+          "grant": [
+            {
+              "grantId": "084323",
+              "agency": "Wellcome Trust",
+              "orderIn": "1"
+            },
+            {
+              "grantId": "UNKNOWN-999",
+              "agency": "Unknown Agency",
+              "orderIn": "2"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "HitCount": "2",
+  "Request": {
+    "Query": "grant_id:AMBIG-123",
+    "ResultType": "Core",
+    "Page": "1"
+  },
+  "RecordList": {
+    "Record": [
+      {
+        "Grant": {
+          "Id": "AMBIG-123",
+          "Title": "Project Alpha",
+          "Funder": {
+            "Name": "Agency Alpha"
+          }
+        }
+      },
+      {
+        "Grant": {
+          "Id": "AMBIG-123",
+          "Title": "Project Beta",
+          "Funder": {
+            "Name": "Agency Beta"
+          }
+        }
+      }
+    ]
+  }
+}

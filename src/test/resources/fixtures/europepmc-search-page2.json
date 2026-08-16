@@ -1,0 +1,48 @@
+{
+  "version": "6.9",
+  "hitCount": 2,
+  "nextCursorMark": "CURSOR_PAGE_2",
+  "request": {
+    "queryString": "Parkinson's disease AND mitochondrial dysfunction",
+    "resultType": "core",
+    "cursorMark": "CURSOR_PAGE_2",
+    "pageSize": 1
+  },
+  "resultList": {
+    "result": [
+      {
+        "id": "1002",
+        "source": "MED",
+        "pmid": "1002",
+        "doi": "10.1000/183",
+        "title": "Parkin-mediated mitophagy regulation in neurons",
+        "authorString": "Brown K.",
+        "authorList": {
+          "author": [
+            { "fullName": "Brown K", "firstName": "Kevin", "lastName": "Brown" }
+          ]
+        },
+        "journalInfo": {
+          "volume": "45",
+          "yearOfPublication": 2023,
+          "journal": {
+            "title": "Brain Research",
+            "medlineAbbreviation": "Brain Res"
+          }
+        },
+        "pubYear": "2023",
+        "abstractText": "Exploration of parkin mitophagy mechanisms.",
+        "citedByCount": 3,
+        "grantsList": {
+          "grant": [
+            {
+              "grantId": "084323",
+              "agency": "Wellcome Trust",
+              "orderIn": "1"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
